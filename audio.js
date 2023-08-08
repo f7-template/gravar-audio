@@ -2,6 +2,9 @@
 var microphoneBtn = document.getElementById('btnGravar');
 var audioContainer = document.getElementById('area-audio');
 
+//CAMINHO PARA UPLOAD DOS AUDIOS
+var serverUrl = 'http://IP_OU_URL_SERVIDOR/audio_upload.php?key=[SUA_KEY_AQUI]';
+
 //QUER QUE SALVE AS URLS DOS AUDIOS NO LOCALSTORAGE?
 var saveLocal = true; //true (sim) false (não)
 
@@ -49,7 +52,6 @@ function startRecording() {
     //ADICIONAR COR VERDE PARA SABER QUE ESTÁ GRAVANDO
     microphoneBtn.classList.add('color-green');
 
-
     //OPÇÕES DE QUALIDADE PLUGIN
     var options = {
         limit: 1, // Limite de gravação (1 arquivo)
@@ -58,8 +60,6 @@ function startRecording() {
 
     // Cria a pasta personalizada para os áudios
     createAudioFolder();
-
-
 }
 
 //CRIAR PASTA PARA GUARDAR ARQUIVO LOCAL
@@ -89,7 +89,7 @@ function startMediaRecording(directoryEntry) {
             };
 
             mediaRec.onstop = function () {
-                console.log('Chegou até aqui');
+                //console.log('Chegou até aqui');
                 var blob = new Blob(chunks, { type: 'audio/wav' });
                 var fileName = new Date().getTime() + ".wav";
                 audioFile = directoryEntry.nativeURL + fileName;
@@ -135,8 +135,6 @@ function stopRecording() {
 function uploadRecording() {
     console.log(audioFile);
     if (audioFile) {
-        var serverUrl = 'http://192.168.0.235/teste-audio/audio_upload.php?key=2dyp6WawyXz8L10PibManN2pNtZsJ9hL85jczuJm'; // Substitua pela URL do seu script PHP no servidor
-
         // Obtém o arquivo gravado em um Blob
         window.resolveLocalFileSystemURL(audioFile, function (fileEntry) {
             fileEntry.file(function (file) {
