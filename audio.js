@@ -133,7 +133,7 @@ function stopRecording() {
 }
 
 function uploadRecording() {
-    console.log(audioFile);
+    //console.log(audioFile);
     if (audioFile) {
         // Obtém o arquivo gravado em um Blob
         window.resolveLocalFileSystemURL(audioFile, function (fileEntry) {
@@ -157,17 +157,16 @@ function uploadRecording() {
                             if (response.ok) {
                                 return response.text();
                             } else {
-                                app.dialog.alert('Falha ao fazer Upload.');
                                 app.dialog.close();
+                                app.dialog.alert('Falha ao fazer Upload.');
                                 throw new Error('Erro na resposta do servidor: ' + response.status);
-
                             }
                         })
                         .then(function (responseData) {
                             console.log('Arquivo enviado com sucesso: ' + responseData);
                             app.dialog.close();
                             createAudioPlayer(responseData);
-                            //SE SALVAR LOCAL ESTIVER ATIVO
+                            //SE SALVAR LOCAL ESTIVER ATIVO (TRUE)
                             if (saveLocal) {
                                 addToLocalStorage(responseData);
                             }
@@ -251,6 +250,8 @@ function addToLocalStorage(audioURL) {
 
         // Armazena o array atualizado no localStorage
         localStorage.setItem('audioData', JSON.stringify(audioArray));
+
+        console.log('Criado localStorage para guardar URLs dos Audios');
 
     }
 }
