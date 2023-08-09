@@ -3,7 +3,7 @@ var microphoneBtn = document.getElementById('btnGravar');
 var audioContainer = document.getElementById('area-audio');
 
 //CAMINHO PARA UPLOAD DOS AUDIOS
-var serverUrl = 'http://IP_OU_URL_SERVIDOR/audio_upload.php?key=[SUA_KEY_AQUI]';
+var serverUrl = 'http://[IP_OU_URL]/audio_upload.php?key=[SUA_CHAVE_AQUI]';
 
 //QUER QUE SALVE AS URLS DOS AUDIOS NO LOCALSTORAGE?
 var saveLocal = true; //true (sim) false (não)
@@ -42,6 +42,35 @@ microphoneBtn.addEventListener('mousedown', startRecording);
 microphoneBtn.addEventListener('touchstart', startRecording);
 microphoneBtn.addEventListener('mouseup', stopRecording);
 microphoneBtn.addEventListener('touchend', stopRecording);
+
+//VERIFICAÇÃO DE PERMISSÃO MICROFONE
+function verificarPermissao() {
+    cordova.plugins.permissions.checkPermission(cordova.plugins.permissions.RECORD_AUDIO, function (status) {
+        if (!status.hasPermission) {
+            // Solicitar permissão do microfone
+            cordova.plugins.permissions.requestPermission(cordova.plugins.permissions.RECORD_AUDIO, function (status) {
+                if (status.hasPermission) {
+                    // Agora você pode usar o plugin de captura de mídia
+                } else {
+                    // Permissão negada, lide com isso de acordo
+                    app.dialog.alert('Para utilizar este aplicativo é necessário conceder permissão do uso do Microfone. Por favor, ative a permissão.', '<b>NECESSÁRIO MICROFONE</b>', function () {
+                        verificarPermissao();
+                    })
+                }
+            }, function () {
+                // Erro ao solicitar permissão
+                console.error('Erro ao solicitar permissão!');
+            });
+        } else {
+            console.log('Permissão de microfone: OK');
+            // A permissão já está concedida, você pode usar o plugin de captura de mídia
+        }
+    }, function () {
+        // Erro ao verificar permissão
+        console.error('Erro ao verificar permissão!');
+    });
+}
+
 
 function startRecording() {
     //MARCAÇÃO DE QUE ESTÁ GRAVANDO
